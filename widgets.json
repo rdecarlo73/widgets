@@ -1,0 +1,27 @@
+
+[
+  {
+    "_id": "504519741c2e4fe89366ae2e",
+    "name": "thing1",
+    "material": "maple wood",
+    "length": 3,
+    "width": 3,
+    "height": 3
+  },
+  {
+    "_id": "5045199c1c2e4fe89366ae2f",
+    "name": "thing2",
+    "material": "steel",
+    "length": 3,
+    "width": 3,
+    "height": 3
+  },
+  {
+    "_id": "50451ac91c2e4fe89366ae30",
+    "name": "thing3",
+    "material": "wood, oak",
+    "length": 3,
+    "width": 3,
+    "height": 3
+  }
+]
