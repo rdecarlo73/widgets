@@ -11,7 +11,7 @@ app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
 
-var dataProvider = new provider.DataProvider('localhost', 27017);
+var dataProvider = new provider.DataLayer('localhost', 27017);
 
 app.get('/', function(req, res){
   dataProvider.get(function(error, objects){

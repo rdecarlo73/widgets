@@ -7,62 +7,61 @@ var ObjectID = require('mongodb').ObjectID;
 var repo = require('./repository.js')
 var util = require('./utility.js')
 
-DataProvider = function(host, port) {
-  this.db= new Db('node-mongo-widgets', new Server(host, port, {auto_reconnect: true}, {}));
+// the location should not need to be passed in.
+DataLayer = function(host, port) {
+  this.db= new Db('mydb', new Server(host, port, {auto_reconnect: true}, {}));
   this.db.open(function(){});
 };
 
+DataLayer.prototype = {
 
-DataProvider.prototype.getCollection= function(callback) {
-  this.db.collection('widgets', function(error, article_collection) {
-    if( error ) callback(error);
-    else callback(null, article_collection);
-  });
-};
+	getCollection : function(callback) {
+  		this.db.collection('widgets', function(error, objects) {
+    		if( error ) callback(error);
+    		else callback(null, objects);
+  		});
+	},
 
-DataProvider.prototype.get = function(callback) {
-    this.getCollection(function(error, article_collection) {
-      if( error ) callback(error)
-      else {
-        article_collection.find().toArray(function(error, results) {
-          if( error ) callback(error)
-          else callback(null, results)
-        });
-      }
-    });
-};
+	get : function(callback) {
+    	this.getCollection(function(error, objects) {
+      		if( error ) callback(error)
+      		else {
+        		objects.find().toArray(function(error, results) {
+          			if( error ) callback(error)
+          			else callback(null, results)
+        		});
+      		}
+    	});
+	},
 
 
-DataProvider.prototype.getById = function(id, callback) {
-    this.getCollection(function(error, article_collection) {
-      if( error ) callback(error)
-      else {
-        article_collection.findOne({_id: article_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, function(error, result) {
-          if( error ) callback(error)
-          else callback(null, result)
-        });
-      }
-    });
-};
+	getById : function(id, callback) {
+    	this.getCollection(function(error, objects) {
+	      if( error ) callback(error)
+	      else {
+	        objects.findOne({_id: objects.db.bson_serializer.ObjectID.createFromHexString(id)}, function(error, result) {
+	          if( error ) callback(error)
+	          else callback(null, result)
+	        });
+	      }
+	    });
+	},
 
-DataProvider.prototype.save = function(objects, callback) {
-    this.getCollection(function(error, article_collection) {
-      if( error ) callback(error)
-      else {
-        if( typeof(articles.length)=="undefined")
-          articles = [articles];
+	save : function(objectsToSave, callback) {
+    	this.getCollection(function(error, objects) {
+	      if( error ) callback(error)
+	      else {
+	        if( typeof(objectsToSave.length)=="undefined")
+	          objectsToSave = [objectsToSave];
 
-        for( var i =0;i< articles.length;i++ ) {
-          article = articles[i];
-        }
+	        objects.insert(objectsToSave, function() {
+	          callback(null, objectsToSave);
+	        });
+	      }
+	    });
+	}
+}
 
-        article_collection.insert(articles, function() {
-          callback(null, articles);
-        });
-      }
-    });
-};
+new DataLayer('localhost', 27017).save(repo.objects, function(error, articles){});
 
-new DataProvider('localhost', 27017).save(repo.objects, function(error, articles){});
-
-exports.DataProvider = DataProvider;
+exports.DataLayer = DataLayer;
